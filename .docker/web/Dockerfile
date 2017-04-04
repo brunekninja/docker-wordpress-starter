@@ -1,2 +1,2 @@
-RUN cd var \
-	mkdir wwwe
+FROM nginx:latest
+RUN 
