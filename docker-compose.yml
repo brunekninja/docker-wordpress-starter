@@ -7,37 +7,35 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: always
+    expose:
+      - "3306"
+    ports:
+      - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    networks:
-      - wp-network
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
   web:
-    build: .docker/web
+    #build: .docker/web
     image: nginx:latest
     depends_on:
       - db
     ports:
-      - "8080:80"
+      - "8081:80"
     volumes:
       - ./root:/var/www/wordpress
       - .docker/site.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - wp-network
+    links:
+      - php
   php:
     # build: .docker/php
     image: php:fpm
     volumes:
       - ./root:/var/www/wordpress
       - .docker/log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
-    networks:
-      - wp-network
-
-networks:
-  wp-network:
-    driver: bridge
+    links:
+      - db
 
 volumes:
     db_data:
