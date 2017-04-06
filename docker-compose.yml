@@ -2,7 +2,6 @@ version: '2'
 
 services:
   db:
-    # build: .docker/db
     image: mysql:5.7
     volumes:
       - db_data:/var/lib/mysql
@@ -17,22 +16,21 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
   web:
-    #build: .docker/web
+    build: .docker/web
     image: nginx:latest
     depends_on:
       - db
     ports:
-      - "8081:80"
+      - "8080:80"
     volumes:
-      - ./root:/var/www/wordpress
+      - ./root:/var/www/app/web
       - .docker/site.conf:/etc/nginx/conf.d/default.conf
     links:
       - php
   php:
-    # build: .docker/php
     image: php:fpm
     volumes:
-      - ./root:/var/www/wordpress
+      - ./root:/var/www/app/web
       - .docker/log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
     links:
       - db
